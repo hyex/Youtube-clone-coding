@@ -3,7 +3,7 @@ import { List, Avatar, Row, Col } from 'antd';
 import axios from 'axios';
 import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
-// import Comments from './Sections/Comments'
+import Comment from './Sections/Comment'
 // import LikeDislikes from './Sections/LikeDislikes';
 
 
@@ -11,7 +11,7 @@ function VideoDetailPage(props) {
 
     const videoId = props.match.params.videoId
     const [Video, setVideo] = useState([])
-    // const [CommentLists, setCommentLists] = useState([])
+    const [Comments, setComments] = useState([])
 
     const variable = {
         videoId: videoId
@@ -28,22 +28,22 @@ function VideoDetailPage(props) {
                 }
             })
 
-        // axios.post('/api/comment/getComments', variable)
-        //     .then(response => {
-        //         if (response.data.success) {
-        //             console.log('response.data.comments',response.data.comments)
-        //             setCommentLists(response.data.comments)
-        //         } else {
-        //             alert('Failed to get video Info')
-        //         }
-        //     })
+        axios.post('/api/comment/getComments', variable)
+            .then(response => {
+                if (response.data.success) {
+                    // console.log(response.data.comments)
+                    setComments(response.data.comments)
+                } else {
+                    alert('Failed to get comment')
+                }
+            })
 
 
     }, [])
 
-    // const updateComment = (newComment) => {
-    //     setCommentLists(CommentLists.concat(newComment))
-    // }
+    const refreshFunction = (newComment) => {
+        setComments(Comments.concat(newComment))
+    }
 
 
     if (Video.writer) {
@@ -65,7 +65,7 @@ function VideoDetailPage(props) {
                             />
                             <div></div>
                         </List.Item>
-
+                        <Comment videoId={Video._id} commentList={Comments} refreshFunction={refreshFunction} />
                         {/* <Comments CommentLists={CommentLists} postId={Video._id} refreshFunction={updateComment} /> */}
 
                     </div>
